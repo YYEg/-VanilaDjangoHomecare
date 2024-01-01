@@ -1,13 +1,33 @@
+from email.policy import default
 from enum import unique
-from tokenize import blank_re
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.forms import CharField
 
 # Create your models here.
 class Categories(models.Model):
-    name = models.CharField(max_length=150, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
+    name = models.CharField(max_length=150, unique=True, verbose_name = 'Название')
+    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name = 'URL')
 
     class Meta:
         db_table = 'category'
+        verbose_name = 'Категорию'
+        verbose_name_plural = 'Категории'
+
+
+class Products(models.Model):
+    name = models.CharField(max_length=150, unique=True, verbose_name = 'Название')
+    slug = models.SlugField(max_length=200, unique=True, blank=True, null=True, verbose_name = 'URL')
+    description = models.TextField(blank=True, null=True, verbose_name = 'Описание')
+    image = models.ImageField(upload_to='good_images', blank=True, null=True, verbose_name = 'Изображение')
+    # Можно делать отрицательную!
+    price = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Цена')
+    #вообще не понятно
+    discount = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Скидка(%)')
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
+    category = models.ForeignKey(to=Categories, on_delete=models.CASCADE, verbose_name='Категория')
+
+    class Meta:
+        db_table = 'product'
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
